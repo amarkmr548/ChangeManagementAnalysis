@@ -1,0 +1,38 @@
+<project name="ChanageManagementAnalysis" default="compile" basedir=".">
+  <!-- Define the properties used by the build -->
+  <property name="app.name"      value="changemanagementanalysisWAR"/>
+  <property name="web.dir" value="WebContent" />
+  <property name="src.dir"    value="src"/>
+  <property name="build.dir"     value="${web.dir}/WEB-INF/classes"/>
+  <property name="lib.dir"      value="${web.dir}/WEB-INF/lib"/>
+  <property name="unittest.dir"      value="test"/>
+  <path id="master-classpath">
+  	<pathelement path="${classpath}"/>
+  	<fileset dir="${lib.dir}">
+  		<include name="*.jar"/>  
+  	</fileset>
+  	<pathelement path="${build.dir}"/>
+  </path>
+  <target name="clean" description="Cleans output dir">
+  	<delete dir="${build.dir}"/>
+  </target>
+  <target name="compile" depends="clean">
+  	<mkdir dir="${build.dir}"/>
+  	<javac 
+  	          destdir="${build.dir}" source="1.8" target="1.8" failonerror="true">
+  	        
+  		<src path="${src.dir}"/>
+  		<classpath refid="master-classpath"></classpath>
+  	</javac>
+  	    <copy  todir="${build.dir}" preservelastmodified="true">
+  	      <fileset dir="${src.dir}" includes="*"/>
+  	    </copy>
+  	<war destfile="${app.name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+  		<fileset dir="${web.dir}">
+  			<include name="**/*.*"/>
+  		</fileset>
+  	</war>
+  </target>
+  
+
+</project> 

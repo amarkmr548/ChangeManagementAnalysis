@@ -1,0 +1,7 @@
+---
+applications:
+  - name: ChangeManagementAnalysis
+    buildpack: java_buildpack
+    path: target/ChangeManagementAnalysis.war
+    services:
+      - mydb
