@@ -22,7 +22,10 @@
 				<th>Reason for Change</th>
 				<th>Comments</th>
 			</tr>
-			
+			<c:forEach var="orderdetail" items="">
+			<tr>
+			</tr>
+			</c:forEach>
 		</table>
 	</div>
 </body>

@@ -3,6 +3,7 @@ package com.vz.bo;
 public class OrderBO {
 	private String order_id;
 	private String reason_code;
+	
 	public String getOrder_id() {
 		return order_id;
 	}
