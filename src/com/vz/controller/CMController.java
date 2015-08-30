@@ -4,21 +4,34 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import com.vz.bo.OrderBO;
 import com.vz.bo.UserBO;
-import com.vz.dao.OrderRefDAO;
+import com.vz.dao.OrderRefDAOIface;
 
 public class CMController extends MultiActionController{
-
-	private OrderRefDAO orderRefDAO;
 	
+	private OrderRefDAOIface orderrefdao;
+	
+	public OrderRefDAOIface getOrderrefdao() {
+		return orderrefdao;
+	}
+
+	public void setOrderrefdao(OrderRefDAOIface orderrefdao) {
+		this.orderrefdao = orderrefdao;
+	}
+
 	public ModelAndView login(HttpServletRequest request, HttpServletResponse response){
 		ModelAndView view = new ModelAndView("login");
+		String loginfail = (String)request.getAttribute("login");
+		if(null != loginfail){
+			view.addObject("failure","Credentials are not valid");
+		}
 		
 		return view;
 	}
@@ -27,29 +40,30 @@ public class CMController extends MultiActionController{
 		
 		String user_id = request.getParameter("user_id");
 		
-		UserBO userBO = orderRefDAO.getUserbyUserId(user_id);
+		UserBO userBO = orderrefdao.getUserbyUserId(user_id);
 		validateLogin(request,response,userBO);
-		String view_mode = request.getParameter("mode");
-		List<OrderBO> userBOList;
-		ModelAndView view = new ModelAndView("userview");;
+		String view_mode = request.getParameter("roleselect");
+		List<OrderBO> orderBOList;
+		ModelAndView view = new ModelAndView("userview");
 		//querying for the user_name
-		if(null == view_mode || "User".equalsIgnoreCase(view_mode)){
+		if(null == view_mode || "user".equalsIgnoreCase(view_mode)){
 			//querying for change orders placed by user
-			userBOList = orderRefDAO.getOrderDetailsByUserId(user_id);
+			orderBOList = orderrefdao.getOrderDetailsByUserId(user_id);
 			//create view with the data avaiable
 			view = new ModelAndView("userview");
 			
-			view.addObject("userbolist", userBOList);
+			view.addObject("orderbolist", orderBOList);
 		}
 		else if("manager".equalsIgnoreCase(view_mode)){
 			//querying for change orders placed by users under the manager
-			userBOList = orderRefDAO.getOrderDetailsByManagerId(user_id);
+			orderBOList = orderrefdao.getOrderDetailsByManagerId(user_id);
 			//create view with the data avaiable
 			view = new ModelAndView("managerview");
-			view.addObject("userbolist", userBOList);
+			
+			view.addObject("orderbolist", orderBOList);
 		}
 		
-		 
+		view.addObject("user_id",user_id);
 		
 		return view;
 	}
@@ -59,6 +73,7 @@ public class CMController extends MultiActionController{
 		if(null == userBO){
 			request.getSession(false).invalidate();
 			try{
+				request.setAttribute("login", "fail");
 				request.getRequestDispatcher("login.htm").forward(request, response);
 			}
 			catch(Exception e){

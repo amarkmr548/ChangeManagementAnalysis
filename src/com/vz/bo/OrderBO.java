@@ -29,7 +29,14 @@ public class OrderBO {
 		this.review = review;
 	}
 	private String comments;
+	public String getReview_comments() {
+		return review_comments;
+	}
+	public void setReview_comments(String review_comments) {
+		this.review_comments = review_comments;
+	}
 	private char review;
+	private String review_comments;
 	
 	public String getEdited_user_id() {
 		return edited_user_id;

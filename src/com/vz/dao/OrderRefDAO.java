@@ -9,16 +9,16 @@ import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import com.vz.bo.OrderBO;
 import com.vz.bo.UserBO;
 
-public class OrderRefDAO extends SimpleJdbcDaoSupport{
+public class OrderRefDAO extends AbstractJdbcDAO implements OrderRefDAOIface {
 	public List<OrderBO> getOrderDetailsByUserId(String user_id){
-		String query = "";
+		String query = "select * from common_ref.order_ref where edited_user_id = ?";
 		
 		List<OrderBO> orderbolist = this.getJdbcTemplate().query(query, new Object[]{user_id},new BeanPropertyRowMapper(OrderBO.class));
 		return orderbolist;
 	}
 	
 	public List<OrderBO> getOrderDetailsByManagerId(String user_id){
-		String query = "";
+		String query = "select order_id,reason_code,comments,review,edited_user_id,review_comments from common_ref.order_ref o, common_ref.user_ref u where u.manager_id = ? and u.user_id = o.edited_user_id";
 		
 		List<OrderBO> orderbolist = this.getJdbcTemplate().query(query, new Object[]{user_id},new BeanPropertyRowMapper(OrderBO.class));
 		return orderbolist;
@@ -35,8 +35,14 @@ public class OrderRefDAO extends SimpleJdbcDaoSupport{
 	public UserBO getUserbyUserId(String user_id){
 		String query = "select * from common_ref.user_ref where user_id = ?";
 		
-		UserBO userbo = (UserBO)this.getJdbcTemplate().queryForObject(query, new Object[]{user_id},new BeanPropertyRowMapper(UserBO.class));
+		List<UserBO> userbolist = this.getJdbcTemplate().query(query, new Object[]{user_id},new BeanPropertyRowMapper(UserBO.class));
+		if(!userbolist.isEmpty()){
+			return userbolist.get(0);
+		}
+		else{
+			
+			return null;
+		}
 		
-		return userbo;
 	}
 }

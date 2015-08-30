@@ -6,15 +6,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>User Order details</title>
+<title>Insert title here</title>
 </head>
 <body>
-	<form action="userDetails.htm">
+	<form action="userdetails.htm">
 	<input type="hidden" id="user_id" value="${user_id }">
 	<div id="rolechange" align="right">
-		<select id="roleselect" style="border: none;width:100px;" onchange="JavaScript:document.forms[0].submit()">
+		<select id="roleselect" style="border: none;width:100px;" onchange="userDetails.htm">
 			
-			<option value="manager">Manager</option>
+			<option value="manager" selected>Manager</option>
 			<option value="user" selected>User</option>
 			
 		</select>
@@ -25,7 +25,9 @@
 				<th>Order ID</th>
 				<th>Reason for Change</th>
 				<th>Comments</th>
+				<th>edited user</th>
 				<th>reviewed?</th>
+				
 				<th>review comments</th>
 			</tr>
 			<c:forEach var="orderdetail" items="${orderbolist}">
@@ -33,16 +35,11 @@
 				<td>${orderdetail.order_id }</td>
 				<td>${orderdetail.reason_code }</td>
 				<td>${orderdetail.comments }</td>
+				<td>${orderdetail.edited_user_id }</td>
 				<td>${orderdetail.review }</td>
 				<td>
-				<c:choose>
-				<c:when test="${not empty orderdetail.review_comments }">
-					${orderdetail.review_comments }
-				</c:when>
-				<c:otherwise>
-					Not reviewed yet
-				</c:otherwise>
-				</c:choose>
+					<textarea id ="review_comment" rows="1" cols="50"></textarea>
+					<input id="review_update" value="update" type="submit">
 				</td>
 			</tr>
 			</c:forEach>
